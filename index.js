@@ -24,14 +24,15 @@ const add = async function (context) {
   await ignite.patchInFile(`${APP_PATH}/App/Redux/CreateStore.js`, {
     insert: `/* ------------- Logger Middleware ------------- */
 
-  const SAGA_LOGGING_BLACKLIST = ['EFFECT_TRIGGERED', 'EFFECT_RESOLVED', 'EFFECT_REJECTED', 'persist/REHYDRATE']
+  // remove common noise
+  const loggingBlacklist = ['EFFECT_TRIGGERED', 'EFFECT_RESOLVED', 'EFFECT_REJECTED', 'persist/REHYDRATE']
   if (__DEV__) {
     // the logger master switch
     const USE_LOGGING = Config.reduxLogging
     // silence these saga-based messages
     // create the logger
     const logger = createLogger({
-      predicate: (getState, { type }) => USE_LOGGING && R.not(R.contains(type, SAGA_LOGGING_BLACKLIST))
+      predicate: (getState, { type }) => USE_LOGGING && R.not(R.contains(type, loggingBlacklist))
     })
     middleware.push(logger)
   }
