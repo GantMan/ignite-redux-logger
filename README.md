@@ -6,3 +6,5 @@ ignite add redux-logger
 ```
 
 And *POOF* you've got redux logger in your app!
+
+[More information on redux-logger can be found here!](https://github.com/evgenyrodionov/redux-logger)
