@@ -5,6 +5,8 @@ const NPM_MODULE_NAME = 'redux-logger'
 const PLUGIN_PATH = __dirname
 const APP_PATH = process.cwd()
 
+const patches = require('./patches')
+
 const add = async function (context) {
   const { ignite, filesystem } = context
 
@@ -16,30 +18,15 @@ const add = async function (context) {
 
   // import in CreateStore file - import createLogger from 'redux-logger'
   await ignite.patchInFile(`${APP_PATH}/App/Redux/CreateStore.js`, {
-    insert: `import createLogger from 'redux-logger'`,
+    insert: patches.import,
     after: `from 'redux'`
   })  
 
   // insert logger middleware right above assemble middleware 
   await ignite.patchInFile(`${APP_PATH}/App/Redux/CreateStore.js`, {
-    insert: `/* ------------- Logger Middleware ------------- */
-
-  // remove common noise
-  const loggingBlacklist = ['EFFECT_TRIGGERED', 'EFFECT_RESOLVED', 'EFFECT_REJECTED', 'persist/REHYDRATE']
-  if (__DEV__) {
-    // the logger master switch
-    const USE_LOGGING = Config.reduxLogging
-    // silence these saga-based messages
-    // create the logger
-    const logger = createLogger({
-      predicate: (getState, { type }) => USE_LOGGING && R.not(R.contains(type, loggingBlacklist))
-    })
-    middleware.push(logger)
-  }
-`,
+    insert: patches.middleware,
     before: `Assemble Middleware`
   })
-
 }
 
 /**
@@ -49,16 +36,14 @@ const remove = async function (context) {
   const { ignite, filesystem, patching } = context
 
   // remove the npm module and unlink it
-  await ignite.removeModule(NPM_MODULE_NAME, { unlink: true })
+  await ignite.removeModule(NPM_MODULE_NAME)
 
-  // Example of removing App/ReduxLogger folder
-  // const removeReduxLogger = await context.prompt.confirm(
-  //   'Do you want to remove App/ReduxLogger?'
-  // )
-  // if (removeReduxLogger) { filesystem.remove(`${APP_PATH}/App/ReduxLogger`) }
+  // TODO need a way to remove debug config vars
+  context.ignite.setDebugConfig('reduxLogging', 'false', true)  
 
-  // Example of unpatching a file
-  // patching.replaceInFile(`${APP_PATH}/App/Config/AppConfig.js`, `import '../ReduxLogger/ReduxLogger'\n`, '')
+  // unpatching a file
+  await patching.replaceInFile(`${APP_PATH}/App/Redux/CreateStore.js`, patches.import, '')
+  await patching.replaceInFile(`${APP_PATH}/App/Redux/CreateStore.js`, patches.middleware, '')
 }
 
 // Required in all Ignite plugins
