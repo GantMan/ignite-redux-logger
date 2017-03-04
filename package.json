@@ -5,8 +5,5 @@
   "license": "MIT",
   "author": "Gant Laborde",
   "url": "https://github.com/GantMan/ignite-redux-logger",
-  "devEngines": {
-    "node": ">=7.x",
-    "npm": ">=4.x"
-  }
+  "repository": "gantman/ignite-redux-logger"
 }
