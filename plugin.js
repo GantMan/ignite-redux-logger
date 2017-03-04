@@ -2,27 +2,26 @@
 // ----------------------------------------------------------------------------
 
 const NPM_MODULE_NAME = 'redux-logger'
-const PLUGIN_PATH = __dirname
 const APP_PATH = process.cwd()
 
 const patches = require('./patches')
 
 const add = async function (context) {
-  const { ignite, filesystem } = context
+  const { ignite } = context
 
   // install a npm module and link it
   await ignite.addModule(NPM_MODULE_NAME)
 
   // Add flag to App/Config/DebugConfig.js
-  context.ignite.setDebugConfig('reduxLogging', '__DEV__', true)  
+  context.ignite.setDebugConfig('reduxLogging', '__DEV__', true)
 
   // import in CreateStore file - import createLogger from 'redux-logger'
   await ignite.patchInFile(`${APP_PATH}/App/Redux/CreateStore.js`, {
     insert: patches.import,
     after: `from 'redux'`
-  })  
+  })
 
-  // insert logger middleware right above assemble middleware 
+  // insert logger middleware right above assemble middleware
   await ignite.patchInFile(`${APP_PATH}/App/Redux/CreateStore.js`, {
     insert: patches.middleware,
     before: `Assemble Middleware`
@@ -33,13 +32,13 @@ const add = async function (context) {
  * Remove yourself from the project.
  */
 const remove = async function (context) {
-  const { ignite, filesystem, patching } = context
+  const { ignite, patching } = context
 
   // remove the npm module and unlink it
   await ignite.removeModule(NPM_MODULE_NAME)
 
   // TODO need a way to remove debug config vars
-  context.ignite.setDebugConfig('reduxLogging', 'false', true)  
+  context.ignite.setDebugConfig('reduxLogging', 'false', true)
 
   // unpatching a file
   await patching.replaceInFile(`${APP_PATH}/App/Redux/CreateStore.js`, patches.import, '')
