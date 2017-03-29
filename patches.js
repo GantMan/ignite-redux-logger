@@ -1,7 +1,7 @@
 
 module.exports = {
   import: `import { createLogger } from 'redux-logger'`,
-  ramda: `import R from 'Ramda'`, // currently not used
+  ramda: `import R from 'Ramda'`, 
   middleware: `  /* ------------- Logger Middleware ------------- */
 
   // remove common noise
