@@ -20,6 +20,12 @@ const add = async function (context) {
     insert: patches.import,
     after: `from 'redux'`
   })
+  
+  // import in CreateStore file - import R from 'ramda'
+  await ignite.patchInFile(`${APP_PATH}/App/Redux/CreateStore.js`, {
+    insert: patches.ramda,
+    after: `from 'redux'`
+  })
 
   // insert logger middleware right above assemble middleware
   await ignite.patchInFile(`${APP_PATH}/App/Redux/CreateStore.js`, {
