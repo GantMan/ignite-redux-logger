@@ -1,6 +1,6 @@
 
 module.exports = {
-  import: `import createLogger from 'redux-logger'`,
+  import: `import { createLogger } from 'redux-logger'`,
   ramda: `import R from 'Ramda'`, // currently not used
   middleware: `  /* ------------- Logger Middleware ------------- */
 
