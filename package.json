@@ -1,7 +1,7 @@
 {
   "name": "ignite-redux-logger",
   "description": "Adds redux-logger to your ignite project",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "license": "MIT",
   "author": "Gant Laborde",
   "url": "https://github.com/GantMan/ignite-redux-logger",
